@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import { AppleMusicController } from './appleMusicController';
 import { NowPlayingStatusBar } from './statusBar';
+import { MusicPanel } from './musicPanel';
 
 export function activate(context: vscode.ExtensionContext) {
     console.log('Apple Music Extension is now active');
@@ -8,20 +9,30 @@ export function activate(context: vscode.ExtensionContext) {
     const controller = new AppleMusicController();
     const statusBar = new NowPlayingStatusBar();
 
+    // Register the webview view provider for the sidebar
+    const provider = new MusicPanel(context.extensionUri);
+    
+    context.subscriptions.push(
+        vscode.window.registerWebviewViewProvider('appleMusicView', provider)
+    );
+
     // Register commands
     const togglePlayPause = vscode.commands.registerCommand('appleMusic.togglePlayPause', async () => {
         await controller.togglePlayPause();
         statusBar.update();
+        MusicPanel.refresh();
     });
 
     const nextTrack = vscode.commands.registerCommand('appleMusic.nextTrack', async () => {
         await controller.nextTrack();
         statusBar.update();
+        MusicPanel.refresh();
     });
 
     const previousTrack = vscode.commands.registerCommand('appleMusic.previousTrack', async () => {
         await controller.previousTrack();
         statusBar.update();
+        MusicPanel.refresh();
     });
 
     const volumeUp = vscode.commands.registerCommand('appleMusic.volumeUp', async () => {
@@ -35,6 +46,7 @@ export function activate(context: vscode.ExtensionContext) {
     const toggleMute = vscode.commands.registerCommand('appleMusic.toggleMute', async () => {
         await controller.toggleMute();
         statusBar.update();
+        MusicPanel.refresh();
     });
 
     const showNowPlaying = vscode.commands.registerCommand('appleMusic.showNowPlaying', async () => {
@@ -55,14 +67,15 @@ export function activate(context: vscode.ExtensionContext) {
         panel.webview.html = getWebviewContent(trackInfo);
     });
 
-    // Add to subscriptions
+    // Register tree view refresh command
+
     context.subscriptions.push(
         togglePlayPause,
         nextTrack,
         previousTrack,
+        toggleMute,
         volumeUp,
         volumeDown,
-        toggleMute,
         showNowPlaying,
         statusBar
     );

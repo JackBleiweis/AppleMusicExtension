@@ -44,6 +44,17 @@
                 "title": "Show Now Playing Info"
             }
         ],
+        "views": {
+            "explorer": [
+                {
+                    "id": "appleMusicView",
+                    "name": "Apple Music",
+                    "type": "webview",
+                    "icon": "$(sync)",
+                    "contextualTitle": "Apple Music"
+                }
+            ]
+        },
         "keybindings": [
             {
                 "command": "appleMusic.togglePlayPause",

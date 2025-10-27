@@ -7,6 +7,7 @@ export interface TrackInfo {
     name: string;
     artist: string;
     album?: string;
+    artwork?: string;
     duration?: string;
     position?: string;
 }
@@ -39,20 +40,25 @@ export class AppleMusicController {
     async getTrackInfo(): Promise<TrackInfo | null> {
         try {
             const script = `
-                if application "Music" is running then
-                    tell application "Music"
-                        if player state is playing then
-                            set trackName to name of current track
-                            set trackArtist to artist of current track
-                            set trackAlbum to album of current track
-                            return trackArtist & "|" & trackName & "|" & trackAlbum
-                        else
-                            return ""
-                        end if
-                    end tell
-                else
-                    return ""
-                end if
+                tell application "Music"
+                    if player state is playing or player state is paused then
+                        set trackName to name of current track
+                        set trackArtist to artist of current track
+                        set trackAlbum to album of current track
+                        set hasArt to "NO_ART"
+                        try
+                            set artworkCount to count of artworks of current track
+                            if artworkCount > 0 then
+                                set hasArt to "HAS_ART"
+                            end if
+                        on error err
+                            -- Ignore error, keep NO_ART
+                        end try
+                        return trackArtist & "|" & trackName & "|" & trackAlbum & "|" & hasArt
+                    else
+                        return ""
+                    end if
+                end tell
             `;
             
             const result = await this.runScript(script);
@@ -62,7 +68,18 @@ export class AppleMusicController {
             }
             
             const parts = result.split('|');
-            if (parts.length >= 3) {
+            console.log('Track info parts:', parts.length, parts);
+            
+            if (parts.length >= 4) {
+                const [artist, name, album, hasArt] = parts;
+                console.log('Setting artwork to:', hasArt === 'HAS_ART' ? 'available' : undefined);
+                return { 
+                    artist, 
+                    name, 
+                    album: album || undefined,
+                    artwork: hasArt === 'HAS_ART' ? 'available' : undefined
+                };
+            } else if (parts.length >= 3) {
                 const [artist, name, album] = parts;
                 return { 
                     artist, 
