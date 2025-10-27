@@ -1,0 +1,93 @@
+{
+    "name": "apple-music-extension",
+    "displayName": "Apple Music Controller",
+    "description": "Control Apple Music playback from within your IDE",
+    "version": "0.1.0",
+    "engines": {
+        "vscode": "^1.74.0"
+    },
+    "categories": [
+        "Other"
+    ],
+    "activationEvents": [
+        "onStartupFinished"
+    ],
+    "main": "./out/extension.js",
+    "contributes": {
+        "commands": [
+            {
+                "command": "appleMusic.togglePlayPause",
+                "title": "Toggle Play/Pause"
+            },
+            {
+                "command": "appleMusic.nextTrack",
+                "title": "Next Track"
+            },
+            {
+                "command": "appleMusic.previousTrack",
+                "title": "Previous Track"
+            },
+            {
+                "command": "appleMusic.volumeUp",
+                "title": "Volume Up"
+            },
+            {
+                "command": "appleMusic.volumeDown",
+                "title": "Volume Down"
+            },
+            {
+                "command": "appleMusic.toggleMute",
+                "title": "Mute/Unmute"
+            },
+            {
+                "command": "appleMusic.showNowPlaying",
+                "title": "Show Now Playing Info"
+            }
+        ],
+        "keybindings": [
+            {
+                "command": "appleMusic.togglePlayPause",
+                "key": "ctrl+cmd+m",
+                "mac": "cmd+shift+m"
+            },
+            {
+                "command": "appleMusic.nextTrack",
+                "key": "ctrl+cmd+right",
+                "mac": "cmd+shift+right"
+            },
+            {
+                "command": "appleMusic.previousTrack",
+                "key": "ctrl+cmd+left",
+                "mac": "cmd+shift+left"
+            },
+            {
+                "command": "appleMusic.volumeUp",
+                "key": "ctrl+cmd+up",
+                "mac": "cmd+shift+up"
+            },
+            {
+                "command": "appleMusic.volumeDown",
+                "key": "ctrl+cmd+down",
+                "mac": "cmd+shift+down"
+            }
+        ],
+        "menus": {}
+    },
+    "scripts": {
+        "vscode:prepublish": "npm run compile",
+        "compile": "tsc -p ./",
+        "watch": "tsc -watch -p ./",
+        "pretest": "npm run compile && npm run lint",
+        "lint": "eslint src --ext ts",
+        "test": "node ./out/test/runTest.js"
+    },
+    "devDependencies": {
+        "@types/node": "^18.x",
+        "@types/vscode": "^1.74.0",
+        "@typescript-eslint/eslint-plugin": "^5.45.0",
+        "@typescript-eslint/parser": "^5.45.0",
+        "eslint": "^8.28.0",
+        "typescript": "^4.9.4"
+    },
+    "dependencies": {}
+}
